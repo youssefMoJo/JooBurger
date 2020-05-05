@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
+import { Route } from "react-router-dom";
+import ContactDate from "./ContactDate/ContactDate";
 
 class Checkout extends Component {
   state = {
-    ingredients: {
-      baconHalal: 0,
-      cheese: 0,
-      meat: 0,
-      salad: 0,
-    },
+    ingredients: null,
+    price: 0,
   };
 
   // componentDidMount() {
@@ -16,14 +14,19 @@ class Checkout extends Component {
   //   const price = this.props.location.state.price;
   //   this.setState({ ingredients: ingreds, price: price });
   // }
-  componentDidMount() {
+  componentWillMount() {
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
+    let price = 0;
     for (let param of query.entries()) {
-      ingredients[param[0]] = +param[1];
+      if (param[0] === "price") {
+        price = param[1];
+      } else {
+        ingredients[param[0]] = +param[1];
+      }
     }
 
-    this.setState({ ingredients: ingredients });
+    this.setState({ ingredients: ingredients, price: price });
   }
 
   checkoutCanceledHandler = () => {
@@ -35,11 +38,24 @@ class Checkout extends Component {
 
   render() {
     return (
-      <CheckoutSummary
-        checkoutCanceled={this.checkoutCanceledHandler}
-        checkoutContinued={this.checkoutContinuedHandler}
-        ingredients={this.state.ingredients}
-      />
+      <div>
+        <CheckoutSummary
+          checkoutCanceled={this.checkoutCanceledHandler}
+          checkoutContinued={this.checkoutContinuedHandler}
+          ingredients={this.state.ingredients}
+        />
+        <Route
+          path={this.props.match.path + "/contact-data"}
+          render={(props) => (
+            <ContactDate
+              price={this.state.price}
+              ingredients={this.state.ingredients}
+              // historyPROP={this.props.history}
+              {...props}
+            />
+          )}
+        />
+      </div>
     );
   }
 }
