@@ -14,20 +14,13 @@ import { connect } from "react-redux";
 class BurgerBuilder extends Component {
   state = {
     purchasing: false,
-    loading: false,
-    error: false,
+    // loading: false,
+    // error: false,
   };
 
-  // componentDidMount() {
-  //   axios
-  //     .get("https://jooburger-936ed.firebaseio.com/ingredients.json")
-  //     .then((response) => {
-  //       this.setState({ ingredients: response.data });
-  //     })
-  //     .catch((error) => {
-  //       this.setState({ error: true });
-  //     });
-  // }
+  componentDidMount() {
+    this.props.onInitIngredients();
+  }
 
   updatePurchasaState = (ingredients) => {
     const sum = Object.keys(ingredients)
@@ -67,14 +60,14 @@ class BurgerBuilder extends Component {
     //   pathname: "/checkout",
     //   state: stateData,
     // });
-
+    this.props.onInitPurchase();
     this.props.history.push("/checkout");
   };
 
   render() {
     let orderSummary = null;
 
-    let burger = this.state.error ? (
+    let burger = this.props.error ? (
       <h1 style={{ textAlign: "center", color: "red" }}>
         Ingredients Can't be loaded
       </h1>
@@ -104,9 +97,9 @@ class BurgerBuilder extends Component {
         />
       );
     }
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
+    // if (this.state.loading) {
+    //   orderSummary = <Spinner />;
+    // }
 
     return (
       <Aux>
@@ -124,8 +117,9 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    ings: state.ingredients,
-    price: state.totalPrice,
+    ings: state.burgerBuilder.ingredients,
+    price: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error,
   };
 };
 
@@ -136,6 +130,9 @@ const mapDispatchToProps = (dispatch) => {
 
     onIngredientRemoved: (ingName) =>
       dispatch(burgerBuilderActions.removeIngredient(ingName)),
+
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
+    onInitPurchase: () => dispatch(burgerBuilderActions.purchaseInit()),
   };
 };
 
