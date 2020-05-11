@@ -8,6 +8,11 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case actionTypes.CHANGING_PURCHASED:
+      return {
+        ...state,
+        purchased: false,
+      };
     case actionTypes.PURCHASE_INIT:
       return {
         ...state,

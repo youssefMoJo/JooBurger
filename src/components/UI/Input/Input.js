@@ -63,12 +63,3 @@ const input = (props) => {
 };
 
 export default input;
-
-// name: {
-//   inputTybe: "input",
-//   inputConfig: {
-//     type: "text",
-//     placeholder: "Your Name",
-//   },
-//   value: "",
-// },
